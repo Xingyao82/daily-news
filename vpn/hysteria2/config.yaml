@@ -1,0 +1,12 @@
+listen: :443
+tls:
+  cert: /etc/hysteria/cert.pem
+  key: /etc/hysteria/key.pem
+auth:
+  type: password
+  password: j4qeoumABwOntRnjBZOy3GSUoUKDKFR6
+masquerade:
+  type: proxy
+  proxy:
+    url: https://bing.com
+    rewriteHost: true

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  xray:
+    image: teddysun/xray:latest
+    container_name: xray
+    restart: always
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    ports:
+      - "8443:8443"
+    volumes:
+      - ./xray/config.json:/etc/xray/config.json:ro
+    networks:
+      - vpn
+
+  hysteria2:
+    image: tobyxdd/hysteria:latest
+    container_name: hysteria2
+    restart: always
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    command: server
+    ports:
+      - "443:443/tcp"
+      - "443:443/udp"
+    volumes:
+      - ./hysteria2:/etc/hysteria:ro
+    cap_add:
+      - NET_BIND_SERVICE
+    networks:
+      - vpn
+
+networks:
+  vpn:
+    driver: bridge
