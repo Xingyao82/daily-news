@@ -1,5 +1,7 @@
 # 贝索斯 Washington Post 大裁员
 
+![报纸新闻](https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80)
+
 ## 标题：华盛顿邮报裁员300人，贝索斯连自己的报纸都养不起了？
 
 ---

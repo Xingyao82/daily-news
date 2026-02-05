@@ -1,5 +1,7 @@
 # AI 正在杀死 B2B SaaS
 
+![AI人工智能](https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=80)
+
 ## 标题：AI正在干掉SaaS公司，过去十年最稳妥的商业模式要凉了？
 
 ---

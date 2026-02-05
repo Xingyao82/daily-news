@@ -1,5 +1,7 @@
 # 暴雪宣布 Overwatch 2 回归原版
 
+![游戏电竞](https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1200&q=80)
+
 ## 标题：Overwatch 2没了，暴雪又把名字改回去了，玩家：早干嘛去了？
 
 ---
