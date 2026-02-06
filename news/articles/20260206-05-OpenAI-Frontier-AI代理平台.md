@@ -1,5 +1,7 @@
 # OpenAI Frontier发布！AI代理管理平台来了，企业软件要变天？
 
+![企业软件平台](https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80)
+
 今天OpenAI又放大招了——正式发布**Frontier**平台，一个专门用来管理和部署AI代理的统—平台。
 
 这消息来自The Verge的报道，虽然Hacker News上的热度不如Claude Opus 4.6，但对企业软件行业来说，这可能是一个更具颠覆性的产品。
