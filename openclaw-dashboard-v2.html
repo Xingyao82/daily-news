@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw Admin Dashboard | 三妹</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        /* 顶部导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .navbar-logo {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .btn-refresh {
+            padding: 8px 16px;
+            background: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #3b82f6;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .btn-refresh:hover {
+            background: #f0f7ff;
+        }
+        
+        .status-tag {
+            padding: 6px 16px;
+            background: #22c55e;
+            color: white;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* 主内容区 */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        /* 页面标题区 */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+        
+        .page-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .page-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .page-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .version-tag {
+            padding: 4px 12px;
+            background: #4b5563;
+            color: white;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* 卡片网格 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* 卡片颜色 */
+        .card-blue { border-left-color: #3b82f6; }
+        .card-green { border-left-color: #22c55e; }
+        .card-yellow { border-left-color: #f59e0b; }
+        .card-cyan { border-left-color: #06b6d4; }
+        .card-purple { border-left-color: #8b5cf6; }
+        .card-orange { border-left-color: #f97316; }
+        .card-teal { border-left-color: #14b8a6; }
+        .card-indigo { border-left-color: #6366f1; }
+        
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .card-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .card-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1f2937;
+            line-height: 1;
+        }
+        
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            opacity: 0.8;
+        }
+        
+        .card-blue .card-icon { background: #eff6ff; }
+        .card-green .card-icon { background: #f0fdf4; }
+        .card-yellow .card-icon { background: #fffbeb; }
+        .card-cyan .card-icon { background: #ecfeff; }
+        .card-purple .card-icon { background: #faf5ff; }
+        .card-orange .card-icon { background: #fff7ed; }
+        .card-teal .card-icon { background: #f0fdfa; }
+        .card-indigo .card-icon { background: #eef2ff; }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                padding: 0 16px;
+            }
+            
+            .main {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <div class="navbar-logo">🛡️</div>
+            <span>OpenClaw Admin</span>
+        </div>
+        
+        <div class="navbar-actions">
+            <button class="btn-refresh" onclick="location.reload()">
+                ⟳ 刷新状态
+            </button>
+            <div class="status-tag">
+                ✓ OpenClaw 状态
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容 -->
+    <main class="main">
+        <!-- 页面标题 -->
+        <div class="page-header">
+            <div class="page-title-group">
+                <h1 class="page-title">
+                    📊 仪表盘
+                </h1>
+                <p class="page-subtitle">系统概览和实时指标</p>
+            </div>
+            
+            <div class="page-meta">
+                <span style="font-size: 14px; color: #6b7280;">系统版本</span>
+                <span class="version-tag">2026.2.12</span>
+            </div>
+        </div>
+
+        <!-- 卡片网格 -->
+        <div class="dashboard-grid">
+            <!-- 活跃会话 -->
+            <div class="dashboard-card card-blue">
+                <div class="card-content">
+                    <span class="card-label">活跃会话</span>
+                    <span class="card-value">34</span>
+                </div>
+                <div class="card-icon">💬</div>
+            </div>
+
+            <!-- 活跃频道 -->
+            <div class="dashboard-card card-green">
+                <div class="card-content">
+                    <span class="card-label">活跃频道</span>
+                    <span class="card-value">1</span>
+                </div>
+                <div class="card-icon">🔗</div>
+            </div>
+
+            <!-- 系统负载 -->
+            <div class="dashboard-card card-yellow">
+                <div class="card-content">
+                    <span class="card-label">系统负载</span>
+                    <span class="card-value">0.24</span>
+                </div>
+                <div class="card-icon">⚡</div>
+            </div>
+
+            <!-- 运行时间 -->
+            <div class="dashboard-card card-cyan">
+                <div class="card-content">
+                    <span class="card-label">运行时间</span>
+                    <span class="card-value" style="font-size: 28px;">0d 2h 35m</span>
+                </div>
+                <div class="card-icon">🕐</div>
+            </div>
+
+            <!-- Agent 数量 -->
+            <div class="dashboard-card card-purple">
+                <div class="card-content">
+                    <span class="card-label">Agent 数量</span>
+                    <span class="card-value">5</span>
+                </div>
+                <div class="card-icon">🤖</div>
+            </div>
+
+            <!-- 定时任务 -->
+            <div class="dashboard-card card-orange">
+                <div class="card-content">
+                    <span class="card-label">定时任务</span>
+                    <span class="card-value">2</span>
+                </div>
+                <div class="card-icon">⏰</div>
+            </div>
+
+            <!-- 内存使用 -->
+            <div class="dashboard-card card-teal">
+                <div class="card-content">
+                    <span class="card-label">内存使用</span>
+                    <span class="card-value">3.0%</span>
+                </div>
+                <div class="card-icon">🧠</div>
+            </div>
+
+            <!-- 磁盘使用 -->
+            <div class="dashboard-card card-indigo">
+                <div class="card-content">
+                    <span class="card-label">磁盘使用</span>
+                    <span class="card-value">12.4%</span>
+                </div>
+                <div class="card-icon">💾</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 自动刷新（每30秒）
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+    </script>
+</body>
+</html>

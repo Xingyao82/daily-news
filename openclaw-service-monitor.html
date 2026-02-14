@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw 服务监控 | 三妹</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-title-icon {
+            font-size: 18px;
+        }
+        
+        .refresh-btn {
+            padding: 6px 12px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        
+        .refresh-btn:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+        
+        /* 表格样式 */
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            padding: 12px 20px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            background: #fafafa;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        tr:hover {
+            background: #fafafa;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* 服务名称 */
+        .service-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .service-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: #f0f7ff;
+        }
+        
+        .service-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .service-title {
+            font-weight: 500;
+            color: #1f2937;
+        }
+        
+        .service-desc {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+        
+        /* 状态标签 */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .status-running {
+            background: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+        
+        .status-stopped {
+            background: #fff2f0;
+            color: #ff4d4f;
+            border: 1px solid #ffccc7;
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        
+        /* 操作按钮 */
+        .action-btn {
+            padding: 6px 16px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+        
+        .action-btn.restart {
+            border-color: #ffd666;
+            color: #d48806;
+            background: #fffbe6;
+        }
+        
+        .action-btn.restart:hover {
+            border-color: #d48806;
+            background: #fff7e6;
+        }
+        
+        /* 资源卡片 */
+        .resource-card {
+            padding: 20px;
+        }
+        
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 12px;
+        }
+        
+        .resource-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .resource-total {
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
+        .progress-fill.low { background: #52c41a; }
+        .progress-fill.medium { background: #faad14; }
+        .progress-fill.high { background: #ff4d4f; }
+        
+        .resource-stats {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
+        
+        .resource-stat {
+            flex: 1;
+        }
+        
+        .resource-stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+        
+        .resource-stat-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        /* 页眉 */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 4px;
+        }
+        
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .page-meta {
+            font-size: 13px;
+            color: #999;
+        }
+        
+        /* 底部 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页眉 -->
+        <div class="page-header">
+            <div class="page-title">
+                🦞 OpenClaw 服务监控
+                <span style="font-size: 14px; color: #666; font-weight: normal;">三妹 Sanmei</span>
+            </div>
+            <div class="page-meta">
+                最后更新: 2026-02-14 14:42:00 CST
+            </div>
+        </div>
+
+        <!-- 服务状态 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-title-icon">🖥️</span>
+                    服务状态
+                </div>
+                <button class="refresh-btn" onclick="location.reload()">
+                    ⟳ 刷新状态
+                </button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>服务</th>
+                            <th>状态</th>
+                            <th>PID</th>
+                            <th>内存</th>
+                            <th>启动时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="service-name">
+                                    <div class="service-icon">🌐</div>
+                                    <div class="service-info">
+                                        <span class="service-title">Gateway 网关</span>
+                                        <span class="service-desc">openclaw-gateway</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge status-running"><span class="status-dot"></span>运行中</span></td>
+                            <td>3047</td>
+                            <td>156 MB</td>
+                            <td>2026-02-14 14:40:38 CST</td>
+                            <td><button class="action-btn restart">⟳ 重启</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="service-name">
+                                    <div class="service-icon" style="background: #e6f7ff;">✈️</div>
+                                    <div class="service-info">
+                                        <span class="service-title">Telegram 服务</span>
+                                        <span class="service-desc">@shfuosifeji_bot</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge status-running"><span class="status-dot"></span>运行中</span></td>
+                            <td>-</td>
+                            <td>24 MB</td>
+                            <td>2026-02-14 14:40:46 CST</td>
+                            <td><button class="action-btn restart">⟳ 重启</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="service-name">
+                                    <div class="service-icon" style="background: #f6ffed;">💬</div>
+                                    <div class="service-info">
+                                        <span class="service-title">WhatsApp 服务</span>
+                                        <span class="service-desc">未配置</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge status-stopped"><span class="status-dot"></span>已停止</span></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><button class="action-btn">▶ 启动</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="service-name">
+                                    <div class="service-icon" style="background: #f9f0ff;">🎮</div>
+                                    <div class="service-info">
+                                        <span class="service-title">Discord 服务</span>
+                                        <span class="service-desc">未配置</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge status-stopped"><span class="status-dot"></span>已停止</span></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><button class="action-btn">▶ 启动</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="service-name">
+                                    <div class="service-icon" style="background: #fff7e6;">🤖</div>
+                                    <div class="service-info">
+                                        <span class="service-title">主 Agent</span>
+                                        <span class="service-desc">agent:main:main</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge status-running"><span class="status-dot"></span>运行中</span></td>
+                            <td>-</td>
+                            <td>45 MB</td>
+                            <td>2026-02-14 14:42:00 CST</td>
+                            <td><button class="action-btn">👁 查看</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 内存详情 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-title-icon">🧠</span>
+                    内存详情
+                </div>
+            </div>
+            <div class="resource-card">
+                <div class="resource-header">
+                    <div class="resource-value">249 MB</div>
+                    <div class="resource-total">/ 8192 MB</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill low" style="width: 3%"></div>
+                </div>
+                
+                <div class="resource-stats">
+                    <div class="resource-stat">
+                        <div class="resource-stat-label">总计</div>
+                        <div class="resource-stat-value">8192 MB</div>
+                    </div>
+                    <div class="resource-stat">
+                        <div class="resource-stat-label">已用</div>
+                        <div class="resource-stat-value">249 MB</div>
+                    </div>
+                    <div class="resource-stat">
+                        <div class="resource-stat-label">可用</div>
+                        <div class="resource-stat-value">7943 MB</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 磁盘详情 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-title-icon">💾</span>
+                    磁盘详情
+                </div>
+            </div>
+            <div class="resource-card">
+                <div class="resource-header">
+                    <div class="resource-value">12.4 GB</div>
+                    <div class="resource-total">/ 100.0 GB</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill low" style="width: 12.4%"></div>
+                </div>
+                
+                <div class="resource-stats">
+                    <div class="resource-stat">
+                        <div class="resource-stat-label">总计</div>
+                        <div class="resource-stat-value">100.0 GB</div>
+                    </div>
+                    <div class="resource-stat">
+                        <div class="resource-stat-label">已用</div>
+                        <div class="resource-stat-value">12.4 GB</div>
+                    </div>
+                    <div class="resource-stat">
+                        <div class="resource-stat-label">可用</div>
+                        <div class="resource-stat-value">87.6 GB</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部 -->
+        <div class="footer">
+            OpenClaw Service Monitor · 最后更新: 2026-02-14 14:42:00 CST
+        </div>
+    </div>
+
+    <script>
+        // 自动刷新
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+
+        // 更新时间
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.querySelector('.page-meta').textContent = `最后更新: ${timeStr} CST`;
+            document.querySelector('.footer').textContent = `OpenClaw Service Monitor · 最后更新: ${timeStr} CST`;
+        }
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>
