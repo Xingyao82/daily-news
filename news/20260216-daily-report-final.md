@@ -12,10 +12,10 @@
 | 序号 | 标题 | 领域 | 重要性 | 时间戳 |
 |------|------|------|--------|--------|
 | 1 | **OpenClaw创始人加盟OpenAI，开源Agent转型基金会模式** | AI Agent | ⭐⭐⭐⭐⭐ | 2026-02-15 |
-| 2 | **中国AI模型密集发布：阿里、字节、快手竞赛白热化** | AI模型 | ⭐⭐⭐⭐⭐ | 2026-02-14 |
-| 3 | **阿里发布RynnBrain机器人模型，挑战谷歌英伟达** | AI机器人 | ⭐⭐⭐⭐⭐ | 2026-02-14 |
-| 4 | **字节Seedance 2.0视频生成模型引发行业震动** | AI视频 | ⭐⭐⭐⭐ | 2026-02-14 |
-| 5 | **快手Kling 3.0升级：15秒视频+多语言音频生成** | AI视频 | ⭐⭐⭐⭐ | 2026-02-14 |
+| 2 | **Microsoft计划降低对OpenAI依赖，加速自研AI** | AI战略 | ⭐⭐⭐⭐⭐ | 2026-02-14 |
+| 3 | **中国AI模型密集发布：阿里、字节、快手竞赛白热化** | AI模型 | ⭐⭐⭐⭐⭐ | 2026-02-14 |
+| 4 | **阿里发布RynnBrain机器人模型，挑战谷歌英伟达** | AI机器人 | ⭐⭐⭐⭐⭐ | 2026-02-14 |
+| 5 | **字节Seedance 2.0视频生成模型引发行业震动** | AI视频 | ⭐⭐⭐⭐ | 2026-02-14 |
 | 6 | **智谱GLM-5开源：代码能力媲美Claude Opus 4.5** | AI编程 | ⭐⭐⭐⭐ | 2026-02-12 |
 | 7 | **MiniMax发布M2.5：开源Agent工具升级** | AI Agent | ⭐⭐⭐⭐ | 2026-02-12 |
 | 8 | **好莱坞AI电影学院：1万名从业者紧急转型** | AI教育 | ⭐⭐⭐⭐ | 2026-02-14 |
@@ -47,6 +47,9 @@
 ### OpenClaw成为OpenAI一员
 2月15日，OpenClaw创始人Peter Steinberger正式加入OpenAI，标志着这个开源Agent项目获得顶级AI公司背书，也预示着AI Agent赛道进入新阶段。
 
+### Microsoft-OpenAI关系生变
+Microsoft AI负责人确认计划降低对OpenAI依赖，加速自研AI能力。这标志着AI巨头间竞争格局的重塑。
+
 ### 好莱坞AI教育热潮
 面对AI冲击，好莱坞从业者积极转型。AI电影学院Curious Refuge已培训1万名学员，成为行业新常态。
 
@@ -55,14 +58,14 @@
 ## 📝 详细文章
 
 1. [OpenClaw创始人加盟OpenAI](articles/20260216-01-openclaw-openai-final.md)
-2. [中国AI模型密集发布](articles/20260216-02-china-ai-week-final.md)
-3. [阿里RynnBrain机器人模型](articles/20260216-03-alibaba-rynnbrain-final.md)
-4. [字节Seedance 2.0视频生成](articles/20260216-04-bytedance-seedance-final.md)
-5. [快手Kling 3.0升级](articles/20260216-05-kuaishou-kling-final.md)
+2. [Microsoft降低OpenAI依赖](articles/20260216-02-microsoft-openai-v2.md)
+3. [中国AI模型密集发布](articles/20260216-02-china-ai-week-final.md)
+4. [阿里RynnBrain机器人模型](articles/20260216-03-alibaba-rynnbrain-final.md)
+5. [字节Seedance 2.0视频生成](articles/20260216-04-bytedance-seedance-final.md)
 6. [智谱GLM-5开源](articles/20260216-06-zhipu-glm5-final.md)
 7. [MiniMax M2.5发布](articles/20260216-07-minimax-m25-final.md)
 8. [好莱坞AI电影学院](articles/20260216-08-hollywood-ai-school-final.md)
 
 ---
 
-*本报告仅供参考，不构成投资建议。*
+*本报告基于2026年2月14-16日公开新闻报道整理，仅供参考，不构成投资建议。*
