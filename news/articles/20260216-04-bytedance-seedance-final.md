@@ -1,5 +1,8 @@
 # 字节Seedance 2.0视频生成模型引发行业震动
 
+![配图](https://images.unsplash.com/photo-1536240478700-b869070f9279?w=800)
+
+
 > **这是目前最全面的视频生成模型。** - Hugging Face
 
 ---

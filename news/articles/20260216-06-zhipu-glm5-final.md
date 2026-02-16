@@ -1,5 +1,8 @@
 # 智谱GLM-5开源：代码能力媲美Claude Opus 4.5
 
+![配图](https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800)
+
+
 > **开源模型正在缩小与闭源模型的差距。**
 
 ---

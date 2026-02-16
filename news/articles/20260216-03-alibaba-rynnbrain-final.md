@@ -1,5 +1,8 @@
 # 阿里发布RynnBrain机器人模型，挑战谷歌英伟达
 
+![配图](https://images.unsplash.com/photo-1535378437321-6f8af65f3f01?w=800)
+
+
 > **机器人可以理解物理世界了。** - Hugging Face研究员
 
 ---

@@ -1,5 +1,7 @@
 # OpenClaw创始人加盟OpenAI，开源Agent转型基金会模式
 
+![AI Agent未来](https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800)
+
 > **"OpenClaw将成为OpenAI支持的开源基金会项目。"** - Sam Altman
 
 ---

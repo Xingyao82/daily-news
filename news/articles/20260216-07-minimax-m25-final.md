@@ -1,5 +1,8 @@
 # MiniMax发布M2.5：开源Agent工具升级
 
+![配图](https://images.unsplash.com/photo-1676299081847-5c0caa7a3f0f?w=800)
+
+
 > **Agentic AI正在成为中国AI的新战场。**
 
 ---

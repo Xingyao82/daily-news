@@ -1,5 +1,8 @@
 # 好莱坞AI电影学院：1万名从业者紧急转型
 
+![配图](https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800)
+
+
 > **AI正在重塑好莱坞，从业者积极拥抱变革。** - Reuters
 
 ---
