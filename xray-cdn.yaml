@@ -1,0 +1,56 @@
+# Clash/Mihomo 配置
+# 保存为 xray-cdn.yaml 导入 Clash Verge
+
+mixed-port: 7890
+allow-lan: false
+bind-address: '*'
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+
+dns:
+  enable: true
+  listen: 0.0.0.0:1053
+  ipv6: false
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  fallback:
+    - https://1.1.1.1/dns-query
+    - https://dns.google/dns-query
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+      - 240.0.0.0/4
+
+proxies:
+  - name: Xray-CDN
+    type: vless
+    server: vps.xingyao8206.xyz
+    port: 443
+    uuid: 83da297c-7d81-4548-bfa6-5cf7e9e94431
+    tls: true
+    servername: vps.xingyao8206.xyz
+    network: ws
+    ws-opts:
+      path: /ws
+      headers:
+        Host: vps.xingyao8206.xyz
+
+proxy-groups:
+  - name: Proxy
+    type: select
+    proxies:
+      - Xray-CDN
+      - DIRECT
+
+rules:
+  - GEOIP,CN,DIRECT
+  - MATCH,Proxy

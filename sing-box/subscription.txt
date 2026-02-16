@@ -1,0 +1,26 @@
+# 小火箭订阅配置
+# 配合 Cloudflare 优选 IP 使用
+# 生成时间: 2026-02-15
+
+# 使用方法：
+# 1. 先运行 CloudflareSpeedTest 获取优选 IP
+# 2. 将下面的链接中的 IP 替换为优选 IP
+# 3. 导入小火箭
+
+# 默认配置（使用 Cloudflare CDN，不暴露真实 IP）
+vless://b0c49c97-e1c9-4f6e-8c23-f70e9f2e5f4a@proxy.xingyao8206.xyz:443?security=tls&sni=proxy.xingyao8206.xyz&type=ws&host=proxy.xingyao8206.xyz&path=/xrayws#VPS-CDN-默认
+
+# 说明：
+# - 此配置使用 Cloudflare CDN（小黄云），隐藏真实 VPS IP
+# - 如需更快速度，手动替换为优选 IP（见下方教程）
+
+# === 优选 IP 教程 ===
+# 1. 查看优选 IP 列表：
+#    cat /root/.openclaw/workspace/cf_best_ip.txt
+#
+# 2. 选择延迟最低的 IP（如 104.16.86.20）
+#
+# 3. 替换到链接中：
+#    vless://b0c49c97-e1c9-4f6e-8c23-f70e9f2e5f4a@104.16.86.20:443?security=tls&sni=proxy.xingyao8206.xyz&type=ws&host=proxy.xingyao8206.xyz&path=/xrayws#CF-优选-104.16.86.20
+#
+# 注意：替换后 SNI 和 Host 必须保持为 proxy.xingyao8206.xyz

@@ -1,0 +1,27 @@
+# Xray CDN 配置
+
+## 服务器信息
+- 地址: vps.xingyao8206.xyz
+- 端口: 443
+- 协议: VLESS
+- UUID: 83da297c-7d81-4548-bfa6-5cf7e9e94431
+- 传输: WebSocket
+- Path: /ws
+- TLS: 开启
+
+## 分享链接
+```
+vless://83da297c-7d81-4548-bfa6-5cf7e9e94431@vps.xingyao8206.xyz:443?type=ws&security=tls&path=/ws#Xray-CDN
+```
+
+## 手机设置
+- **Android (V2RayNG)**: 复制链接 → 右上角 + → 从剪贴板导入
+- **iOS (Shadowrocket)**: 复制链接 → 导入
+
+## 流量路径
+手机 → Cloudflare CDN (IP 隐藏) → VPS → 目标网站
+
+## 状态
+- VPS 真实 IP: 192.3.104.20 (仅 Cloudflare 知道)
+- 对外显示: Cloudflare IP
+- 移动公司只能看到: 你在访问 Cloudflare

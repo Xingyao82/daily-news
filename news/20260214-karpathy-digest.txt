@@ -1,0 +1,47 @@
+============================================================
+🧠 Karpathy 精选日报 - 2026年02月14日
+============================================================
+
+Andrej Karpathy - AI 研究员、教育家、前 Tesla AI 总监
+博客: https://karpathy.ai/ | GitHub: https://github.com/karpathy
+
+🎬 最新 YouTube 视频
+----------------------------------------
+
+【视频】How I use LLMs
+📅 近期
+🔗 https://youtube.com/watch?v=EWvNQjAaOHw
+
+【视频】Let's reproduce GPT-2 (124M)
+📅 近期
+🔗 https://youtube.com/watch?v=7xTGNNLPyMI
+
+📚 博客文章
+----------------------------------------
+
+【博客】Bear blog
+🔗 https://karpathy.bearblog.dev/blog/
+
+⭐ 精选推荐内容
+----------------------------------------
+
+【精选视频】Let's build GPT: from scratch
+📝 从头开始构建 GPT 模型的经典教程，深入浅出讲解 transformer 原理
+🔗 https://www.youtube.com/watch?v=kCc8FmEb1nY
+
+【精选课程】Neural Networks: Zero to Hero
+📝 神经网络入门到精通系列，最受欢迎的教育课程之一
+🔗 https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ
+
+【精选视频】Tokenization - AI 背后的无声英雄
+📝 深入讲解 Tokenization 原理，理解 GPT 如何处理文本
+🔗 https://www.youtube.com/watch?v=zduSFxRajkE
+
+【精选资源】Karpathy 博客
+📝 Andrej Karpathy 的个人博客，包含大量深度技术文章
+🔗 https://karpathy.ai/
+
+============================================================
+🦞 由三妹自动采集生成
+📅 每日更新，追踪 AI 大牛最新动态
+============================================================

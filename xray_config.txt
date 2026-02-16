@@ -1,0 +1,33 @@
+# Xray 配置信息
+
+## 服务器信息
+- 地址: 192.3.104.20
+- 端口: 12144
+- 协议: VLESS
+- UUID: 83da297c-7d81-4548-bfa6-5cf7e9e94431
+- 传输: tcp
+- 安全: reality
+- flow: xtls-rprx-vision
+- SNI: www.cloudflare.com
+- PublicKey: cHTvQVPZhgqkdQ-l2LQWqqHHqr1_KypPXG-QhJgv3BE
+- ShortID: (留空)
+- SpiderX: /
+
+## 分享链接
+```
+vless://83da297c-7d81-4548-bfa6-5cf7e9e94431@192.3.104.20:12144?type=tcp&security=reality&flow=xtls-rprx-vision&sni=www.cloudflare.com&pbk=cHTvQVPZhgqkdQ-l2LQWqqHHqr1_KypPXG-QhJgv3BE&sid=&spx=/#Xray-CF
+```
+
+## 手机客户端
+
+### Android (V2RayNG)
+1. 下载 V2RayNG
+2. 点击右上角 + → 从剪贴板导入
+3. 复制上面的分享链接，自动识别
+
+### iOS (Shadowrocket / Quantumult X)
+1. 复制分享链接
+2. 打开 Shadowrocket → 右上角 + → 扫描二维码或导入链接
+
+## 测试连接
+连接后访问 https://ipinfo.io 应该显示 Cloudflare IP (104.28.x.x)
