@@ -1,0 +1,6 @@
+# 敏感文件不提交
+*.key
+*.pem
+*.token
+.env
+node_modules/

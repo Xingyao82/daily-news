@@ -1,0 +1,23 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "``` workspace/ ├── 📁 trading/              # 交易与套利系统 │   └── polymarket_scanner.py    # Polymarket套利扫描器 │ ├── 📁 content/              # 内容生产系统 │   ├── 📁 scripts/          # 内容生成脚本 │   │   ├── karpathy_digest.py   # Karpathy日报生成 │   │   ├── evolution_monitor.py # 进化监控系统 │   │   └── self_evolution.py    # 自我进化核心 │   └── 📁 daily/            # 日报归档 │       ├── 2026-02-13-daily.md │       └── 2026-02-13-wechat.md │ ├── 📁 news/                 # 公众号文章 │   └── 📁 articles/         # 专业格式文章 │       ├── 20260213-01-deepseek-anniversary.md │       ├── 20260213-02-zhipu-glm5.md │       └── ... (共8篇) │ ├── 📁 memory/               # 记忆与日志 │   ├── 2026-02-12.md │   ├── 2026-02-13.md │   └── karpathy-digest-*.md │ ├── 📁 config/               # 配置文件 │   └── 📁 vpn/              # VPN配置 │       ├── clash-verge-config.yaml │       └── vpn-config-backup.md │ └── 📄 核心文件              # 保留在根目录     ├── AGENTS.md            # 代理配置     ├── SOUL.md              # 灵魂定义     ├── IDENTITY.md          # 身份定义     ├── USER.md              # 用户信息     ├── TOOLS.md             # 工具配置     ├── BOOTSTRAP.md         # 启动配置     └── HEARTBEAT.md         # 心跳任务 ```",
+  "main": "browser-tools.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xingyao82/daily-news.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xingyao82/daily-news/issues"
+  },
+  "homepage": "https://github.com/Xingyao82/daily-news#readme",
+  "dependencies": {
+    "playwright": "^1.58.2"
+  }
+}

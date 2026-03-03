@@ -1,0 +1,50 @@
+# 机票监控配置
+# 监控路线：长沙/北京 → 洛杉矶
+# 排除：菲律宾中转
+
+ROUTES:
+  - from: "长沙 (CSX)"
+    to: "洛杉矶 (LAX)"
+    type: "all"  # 直飞和中转都接受
+    exclude_transit: ["菲律宾", "马尼拉", "MNL"]
+    
+  - from: "北京 (PEK/PKX)"
+    to: "洛杉矶 (LAX)"
+    type: "all"
+    exclude_transit: ["菲律宾", "马尼拉", "MNL"]
+
+# 价格阈值（人民币）
+PRICE_THRESHOLD:
+  economy: 6000    # 经济舱超过此价格才通知降价
+  business: 20000  # 商务舱超过此价格才通知降价
+
+# 监控频率
+check_interval: "daily"  # 每天检查一次
+
+# 关注航司（可选）
+PREFERRED_AIRLINES:
+  - "国航"
+  - "东航"
+  - "南航"
+  - "海航"
+  - "国泰"
+  - "长荣"
+  - "全日空"
+  - "韩亚"
+  - "大韩"
+  - "国泰"
+  - "新加坡航空"
+  - "阿联酋"
+  - "卡塔尔"
+  - "土耳其"
+
+# 排除航司
+EXCLUDE_AIRLINES: []
+
+# 预订平台
+PLATFORMS:
+  - "Expedia"
+  - "Kayak"
+  - "Skyscanner"
+  - "携程"
+  - "去哪儿"

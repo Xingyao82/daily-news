@@ -1,0 +1,12 @@
+{
+  "name": "browser-control",
+  "version": "1.0.0",
+  "description": "Browser automation tool for OpenClaw",
+  "main": "browser-control.js",
+  "scripts": {
+    "start": "node browser-control.js"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

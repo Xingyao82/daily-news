@@ -1,0 +1,116 @@
+# Clash / 小火箭 订阅配置
+# 生成时间: 2026-02-23
+# 包含当前可用节点
+
+mixed-port: 7890
+allow-lan: true
+bind-address: '*'
+mode: rule
+log-level: info
+external-controller: '127.0.0.1:9090'
+
+proxies:
+  # 节点1: Reality 直连 (当前可用)
+  - name: "🟢 Reality-直连"
+    type: vless
+    server: 192.3.104.20
+    port: 12144
+    uuid: 83da297c-7d81-4548-bfa6-5cf7e9e94431
+    flow: xtls-rprx-vision
+    tls: true
+    servername: www.cloudflare.com
+    client-fingerprint: chrome
+    reality-opts:
+      public-key: cHTvQVPZhgqkdQ-l2LQWqqHHqr1_KypPXG-QhJgv3BE
+      short-id: ""
+    skip-cert-verify: false
+    udp: true
+
+  # 节点2: VMess+WS (备用)
+  - name: "🟡 VMess-WS-443"
+    type: vmess
+    server: proxy.xingyao8206.xyz
+    port: 443
+    uuid: 83da297c-7d81-4548-bfa6-5cf7e9e94431
+    alterId: 0
+    cipher: auto
+    udp: true
+    tls: true
+    skip-cert-verify: false
+    servername: proxy.xingyao8206.xyz
+    network: ws
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: proxy.xingyao8206.xyz
+
+  # 节点3: VMess+WS-8443 (备用端口)
+  - name: "🟡 VMess-WS-8443"
+    type: vmess
+    server: proxy.xingyao8206.xyz
+    port: 8443
+    uuid: 83da297c-7d81-4548-bfa6-5cf7e9e94431
+    alterId: 0
+    cipher: auto
+    udp: true
+    tls: true
+    skip-cert-verify: false
+    servername: proxy.xingyao8206.xyz
+    network: ws
+    ws-opts:
+      path: "/ws"
+      headers:
+        Host: proxy.xingyao8206.xyz
+
+proxy-groups:
+  - name: "🚀 节点选择"
+    type: select
+    proxies:
+      - "🟢 Reality-直连"
+      - "🟡 VMess-WS-443"
+      - "🟡 VMess-WS-8443"
+      - DIRECT
+
+  - name: "📹 视频"
+    type: select
+    proxies:
+      - "🟢 Reality-直连"
+      - "🟡 VMess-WS-443"
+      - DIRECT
+
+  - name: "Ⓜ️ 微软服务"
+    type: select
+    proxies:
+      - DIRECT
+      - "🟢 Reality-直连"
+
+rules:
+  # 局域网直连
+  - IP-CIDR,127.0.0.0/8,DIRECT
+  - IP-CIDR,172.16.0.0/12,DIRECT
+  - IP-CIDR,192.168.0.0/16,DIRECT
+  - IP-CIDR,10.0.0.0/8,DIRECT
+  
+  # 微软服务
+  - DOMAIN-SUFFIX,microsoft.com,Ⓜ️ 微软服务
+  - DOMAIN-SUFFIX,windows.com,Ⓜ️ 微软服务
+  - DOMAIN-SUFFIX,office.com,Ⓜ️ 微软服务
+  
+  # 视频平台
+  - DOMAIN-KEYWORD,youtube,📹 视频
+  - DOMAIN-KEYWORD,netflix,📹 视频
+  - DOMAIN-KEYWORD,disney,📹 视频
+  
+  # 国外网站代理
+  - DOMAIN-SUFFIX,google.com,🚀 节点选择
+  - DOMAIN-SUFFIX,gmail.com,🚀 节点选择
+  - DOMAIN-SUFFIX,youtube.com,🚀 节点选择
+  - DOMAIN-SUFFIX,twitter.com,🚀 节点选择
+  - DOMAIN-SUFFIX,x.com,🚀 节点选择
+  - DOMAIN-SUFFIX,telegram.org,🚀 节点选择
+  - DOMAIN-SUFFIX,github.com,🚀 节点选择
+  - DOMAIN-SUFFIX,openai.com,🚀 节点选择
+  
+  # 默认
+  - GEOIP,CN,DIRECT
+  - MATCH,🚀 节点选择

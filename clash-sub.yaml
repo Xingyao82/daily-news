@@ -1,0 +1,120 @@
+# Clash 订阅配置文件
+# 订阅地址: http://你的VPSIP:8080/clash-sub.yaml
+# 或使用本地文件订阅
+
+# 端口配置
+port: 7890
+socks-port: 7891
+mixed-port: 7892
+allow-lan: true
+bind-address: '*'
+mode: rule
+log-level: info
+external-controller: '127.0.0.1:9090'
+
+# 代理节点
+proxies:
+  - name: "🟢 Reality-443"
+    type: vless
+    server: 192.3.104.20
+    port: 443
+    uuid: 83da297c-7d81-4548-bfa6-5cf7e9e94431
+    flow: xtls-rprx-vision
+    tls: true
+    servername: www.cloudflare.com
+    client-fingerprint: chrome
+    reality-opts:
+      public-key: cHTvQVPZhgqkdQ-l2LQWqqHHqr1_KypPXG-QhJgv3BE
+      short-id: ""
+    skip-cert-verify: false
+    udp: true
+
+  - name: "🟡 Reality-8443"
+    type: vless
+    server: 192.3.104.20
+    port: 8443
+    uuid: 83da297c-7d81-4548-bfa6-5cf7e9e94431
+    flow: xtls-rprx-vision
+    tls: true
+    servername: www.cloudflare.com
+    client-fingerprint: chrome
+    reality-opts:
+      public-key: cHTvQVPZhgqkdQ-l2LQWqqHHqr1_KypPXG-QhJgv3BE
+      short-id: ""
+    skip-cert-verify: false
+    udp: true
+
+  - name: "🟡 Reality-12144"
+    type: vless
+    server: 192.3.104.20
+    port: 12144
+    uuid: 83da297c-7d81-4548-bfa6-5cf7e9e94431
+    flow: xtls-rprx-vision
+    tls: true
+    servername: www.cloudflare.com
+    client-fingerprint: chrome
+    reality-opts:
+      public-key: cHTvQVPZhgqkdQ-l2LQWqqHHqr1_KypPXG-QhJgv3BE
+      short-id: ""
+    skip-cert-verify: false
+    udp: true
+
+# 代理组
+proxy-groups:
+  - name: "🚀 节点选择"
+    type: select
+    proxies:
+      - "🟢 Reality-443"
+      - "🟡 Reality-8443"
+      - "🟡 Reality-12144"
+      - DIRECT
+
+  - name: "📹 YouTube"
+    type: select
+    proxies:
+      - "🟢 Reality-443"
+      - "🟡 Reality-8443"
+      - DIRECT
+
+  - name: "🍎 Apple"
+    type: select
+    proxies:
+      - DIRECT
+      - "🟢 Reality-443"
+
+# 规则
+rules:
+  # 局域网直连
+  - IP-CIDR,127.0.0.0/8,DIRECT
+  - IP-CIDR,172.16.0.0/12,DIRECT
+  - IP-CIDR,192.168.0.0/16,DIRECT
+  - IP-CIDR,10.0.0.0/8,DIRECT
+  
+  # 微软服务
+  - DOMAIN-SUFFIX,microsoft.com,🚀 节点选择
+  - DOMAIN-SUFFIX,windows.com,🚀 节点选择
+  - DOMAIN-SUFFIX,office.com,🚀 节点选择
+  
+  # Apple 服务
+  - DOMAIN-SUFFIX,apple.com,🍎 Apple
+  - DOMAIN-SUFFIX,icloud.com,🍎 Apple
+  
+  # 视频平台
+  - DOMAIN-KEYWORD,youtube,📹 YouTube
+  - DOMAIN-KEYWORD,googlevideo,📹 YouTube
+  
+  # 国外网站代理
+  - DOMAIN-SUFFIX,google.com,🚀 节点选择
+  - DOMAIN-SUFFIX,gmail.com,🚀 节点选择
+  - DOMAIN-SUFFIX,twitter.com,🚀 节点选择
+  - DOMAIN-SUFFIX,x.com,🚀 节点选择
+  - DOMAIN-SUFFIX,telegram.org,🚀 节点选择
+  - DOMAIN-SUFFIX,github.com,🚀 节点选择
+  
+  # 国内直连
+  - DOMAIN-SUFFIX,cn,DIRECT
+  - DOMAIN-KEYWORD,baidu,DIRECT
+  
+  # 默认
+  - GEOIP,CN,DIRECT
+  - MATCH,🚀 节点选择

@@ -1,252 +1,297 @@
 #!/usr/bin/env python3
 """
-Karpathy 精选 RSS 日报生成脚本
-获取 Andrej Karpathy 的最新动态、博客和视频
+Karpathy 精选 RSS 日报生成器（纯标准库版本）
+完全复制 YouMind 技能功能
 """
 
-import requests
-from datetime import datetime, timedelta
+import urllib.request
+import urllib.error
 import re
-import os
+from datetime import datetime, timedelta
 import json
+import os
+import xml.etree.ElementTree as ET
 
-def fetch_blog_posts():
-    """通过直接请求获取 Karpathy 博客内容"""
+# 配置
+RSS_PACK_URL = "https://youmind.com/rss/pack/andrej-karpathy-curated-rss"
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "393431723")
+MEMORY_DIR = "/root/.openclaw/workspace/memory"
+
+
+def send_telegram_report(title, message):
+    """发送 Telegram 报告"""
+    if not TELEGRAM_BOT_TOKEN:
+        print(f"[{title}]\n{message}")
+        return
+    
+    import urllib.request
+    import urllib.parse
+    
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    
+    # 如果消息太长，分段发送
+    max_length = 4000
+    
+    if len(message) <= max_length:
+        data = urllib.parse.urlencode({
+            "chat_id": TELEGRAM_CHAT_ID,
+            "text": f"*{title}*\n\n{message}",
+            "parse_mode": "Markdown",
+            "disable_web_page_preview": "True"
+        }).encode()
+        
+        try:
+            req = urllib.request.Request(url, data=data, method='POST')
+            urllib.request.urlopen(req, timeout=30)
+        except Exception as e:
+            print(f"发送失败: {e}")
+    else:
+        # 分段发送
+        parts = [message[i:i+max_length] for i in range(0, len(message), max_length)]
+        for i, part in enumerate(parts):
+            part_title = f"{title} (Part {i+1}/{len(parts)})" if i > 0 else title
+            data = urllib.parse.urlencode({
+                "chat_id": TELEGRAM_CHAT_ID,
+                "text": f"*{part_title}*\n\n{part}",
+                "parse_mode": "Markdown",
+                "disable_web_page_preview": "True"
+            }).encode()
+            
+            try:
+                req = urllib.request.Request(url, data=data, method='POST')
+                urllib.request.urlopen(req, timeout=30)
+            except Exception as e:
+                print(f"发送失败: {e}")
+
+
+def fetch_url(url):
+    """获取 URL 内容"""
     try:
-        # Karpathy 博客主页
-        url = "https://karpathy.ai/"
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
-        response = requests.get(url, headers=headers, timeout=30)
-        response.raise_for_status()
-        html = response.text
-        
-        posts = []
-        # 尝试从博客页面提取文章链接
-        # Karpathy 的博客通常在主页列出文章
-        article_pattern = r'href="([^"]*blog[^"]*)"[^>]*>([^<]+)</a>'
-        matches = re.findall(article_pattern, html, re.IGNORECASE)
-        
-        seen = set()
-        for link, title in matches[:5]:
-            if link not in seen and title.strip():
-                seen.add(link)
-                # 确保完整URL
-                if link.startswith('/'):
-                    link = f"https://karpathy.ai{link}"
-                elif not link.startswith('http'):
-                    link = f"https://karpathy.ai/{link}"
-                
-                posts.append({
-                    'title': title.strip(),
-                    'link': link,
-                    'summary': '',
-                    'published': '',
-                    'type': '博客'
-                })
-        
-        return posts
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=30) as response:
+            return response.read().decode('utf-8', errors='ignore')
     except Exception as e:
-        return []
+        print(f"获取失败 {url}: {e}")
+        return None
 
-def fetch_github_activity():
-    """获取 Karpathy GitHub 最近活动"""
+
+def parse_rss(xml_content):
+    """解析 RSS Feed"""
     try:
-        # Karpathy 的 GitHub 用户名是 karpathy
-        url = "https://api.github.com/users/karpathy/events/public"
-        headers = {
-            'User-Agent': 'Mozilla/5.0',
-            'Accept': 'application/vnd.github.v3+json'
-        }
-        response = requests.get(url, headers=headers, timeout=30)
-        response.raise_for_status()
-        events = response.json()
+        root = ET.fromstring(xml_content)
         
-        activities = []
-        yesterday = datetime.now() - timedelta(days=2)
+        # 处理 RSS 2.0 和 Atom 格式
+        entries = []
         
-        for event in events[:10]:
-            event_time = event.get('created_at', '')
-            if event_time:
-                event_date = datetime.fromisoformat(event_time.replace('Z', '+00:00')).replace(tzinfo=None)
-                if event_date > yesterday:
-                    event_type = event.get('type', '')
-                    repo = event.get('repo', {}).get('name', '')
-                    
-                    if event_type == 'PushEvent':
-                        commits = event.get('payload', {}).get('commits', [])
-                        if commits:
-                            msg = commits[0].get('message', '')[:100]
-                            activities.append({
-                                'title': f"推送代码到 {repo}",
-                                'link': f"https://github.com/{repo}",
-                                'summary': f"最新提交: {msg}",
-                                'published': event_date.strftime('%Y-%m-%d %H:%M'),
-                                'type': 'GitHub'
-                            })
-                    elif event_type == 'CreateEvent':
-                        ref_type = event.get('payload', {}).get('ref_type', '')
-                        activities.append({
-                            'title': f"创建{ref_type}: {repo}",
-                            'link': f"https://github.com/{repo}",
-                            'summary': '',
-                            'published': event_date.strftime('%Y-%m-%d %H:%M'),
-                            'type': 'GitHub'
-                        })
+        # RSS 2.0
+        for item in root.findall('.//item'):
+            entry = {
+                'title': item.findtext('title', '无标题').strip(),
+                'link': item.findtext('link', ''),
+                'description': item.findtext('description', ''),
+                'pubDate': item.findtext('pubDate', ''),
+            }
+            entries.append(entry)
         
-        return activities[:5]
+        # Atom
+        for entry in root.findall('.//{http://www.w3.org/2005/Atom}entry'):
+            title = entry.findtext('{http://www.w3.org/2005/Atom}title', '无标题')
+            link = entry.find('{http://www.w3.org/2005/Atom}link')
+            href = link.get('href', '') if link is not None else ''
+            summary = entry.findtext('{http://www.w3.org/2005/Atom}summary', '')
+            published = entry.findtext('{http://www.w3.org/2005/Atom}published', '')
+            
+            entries.append({
+                'title': title.strip() if title else '无标题',
+                'link': href,
+                'description': summary,
+                'pubDate': published
+            })
+        
+        return entries
     except Exception as e:
+        print(f"解析 RSS 失败: {e}")
         return []
 
-def fetch_youtube_videos():
-    """获取 Karpathy YouTube 视频 - 使用简单方法"""
+
+def fetch_article_content(url):
+    """获取文章内容"""
+    html = fetch_url(url)
+    if not html:
+        return {
+            "title": "获取失败",
+            "content": "无法访问页面",
+            "url": url
+        }
+    
     try:
-        # YouTube 频道页面
-        url = "https://www.youtube.com/@AndrejKarpathy/videos"
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        # 提取标题
+        title_match = re.search(r'<title[^>]*>(.*?)</title>', html, re.IGNORECASE | re.DOTALL)
+        title = title_match.group(1).strip() if title_match else "无标题"
+        title = re.sub(r'<[^>]+>', '', title)  # 移除 HTML 标签
+        
+        # 移除 script 和 style
+        html = re.sub(r'<script[^>]*>.*?</script>', '', html, flags=re.IGNORECASE | re.DOTALL)
+        html = re.sub(r'<style[^>]*>.*?</style>', '', html, flags=re.IGNORECASE | re.DOTALL)
+        
+        # 提取段落
+        paragraphs = re.findall(r'<p[^>]*>(.*?)</p>', html, re.IGNORECASE | re.DOTALL)
+        
+        article_text = ""
+        for p in paragraphs[:5]:
+            text = re.sub(r'<[^>]+>', ' ', p)
+            text = re.sub(r'\s+', ' ', text).strip()
+            if len(text) > 50:
+                article_text += text + "\n\n"
+                if len(article_text) > 1000:
+                    break
+        
+        if not article_text:
+            article_text = "无法提取正文"
+        
+        return {
+            "title": title[:200],
+            "content": article_text[:1500],
+            "url": url
         }
-        response = requests.get(url, headers=headers, timeout=30)
-        
-        videos = []
-        html = response.text
-        
-        # 尝试提取视频信息 (YouTube 页面结构会变化，这里使用简单匹配)
-        # 查找视频标题和ID
-        video_pattern = r'"videoId":"([a-zA-Z0-9_-]{11})".*?"title":\{"runs":\[\{"text":"([^"]+)"\}'
-        matches = re.findall(video_pattern, html)
-        
-        seen = set()
-        for video_id, title in matches[:3]:
-            if video_id not in seen:
-                seen.add(video_id)
-                videos.append({
-                    'title': title,
-                    'link': f"https://youtube.com/watch?v={video_id}",
-                    'summary': '',
-                    'published': '近期',
-                    'type': '视频'
-                })
-        
-        return videos
     except Exception as e:
-        return []
-
-def get_karpathy_insights():
-    """获取 Karpathy 的一些经典/重要内容推荐"""
-    return [
-        {
-            'title': 'Let\'s build GPT: from scratch',
-            'link': 'https://www.youtube.com/watch?v=kCc8FmEb1nY',
-            'summary': '从头开始构建 GPT 模型的经典教程，深入浅出讲解 transformer 原理',
-            'type': '精选视频'
-        },
-        {
-            'title': 'Neural Networks: Zero to Hero',
-            'link': 'https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ',
-            'summary': '神经网络入门到精通系列，最受欢迎的教育课程之一',
-            'type': '精选课程'
-        },
-        {
-            'title': 'Tokenization - AI 背后的无声英雄',
-            'link': 'https://www.youtube.com/watch?v=zduSFxRajkE',
-            'summary': '深入讲解 Tokenization 原理，理解 GPT 如何处理文本',
-            'type': '精选视频'
-        },
-        {
-            'title': 'Karpathy 博客',
-            'link': 'https://karpathy.ai/',
-            'summary': 'Andrej Karpathy 的个人博客，包含大量深度技术文章',
-            'type': '精选资源'
+        return {
+            "title": "解析失败",
+            "content": f"错误: {str(e)[:100]}",
+            "url": url
         }
-    ]
+
+
+def group_by_topic(articles):
+    """按主题分组"""
+    topics = {}
+    
+    for article in articles:
+        title = article.get('title', '')
+        title_lower = title.lower()
+        
+        # 关键词匹配
+        if any(word in title_lower for word in ['ai', 'llm', 'gpt', 'openai', 'claude', 'model']):
+            topic = 'AI'
+        elif any(word in title_lower for word in ['code', 'programming', 'developer', 'software', 'python']):
+            topic = '编程'
+        elif any(word in title_lower for word in ['learning', 'neural', 'pytorch', 'tensorflow', 'training']):
+            topic = '深度学习'
+        elif any(word in title_lower for word in ['startup', 'founder', 'business', 'company']):
+            topic = '创业'
+        elif any(word in title_lower for word in ['chip', 'gpu', 'hardware', 'semiconductor', 'nvidia']):
+            topic = '硬件'
+        elif any(word in title_lower for word in ['paper', 'research', 'arxiv', 'study', 'university']):
+            topic = '研究'
+        else:
+            topic = '其他'
+        
+        if topic not in topics:
+            topics[topic] = []
+        topics[topic].append(article)
+    
+    return topics
+
 
 def generate_digest():
     """生成日报"""
-    today = datetime.now().strftime('%Y年%m月%d日')
+    today = datetime.now().strftime('%Y-%m-%d')
     
-    # 获取各类内容
-    blog_posts = fetch_blog_posts()
-    github_activities = fetch_github_activity()
-    youtube_videos = fetch_youtube_videos()
-    insights = get_karpathy_insights()
+    print(f"[{datetime.now()}] 开始生成 Karpathy 精选 RSS 日报...")
     
-    # 构建日报内容
-    lines = []
-    lines.append("=" * 60)
-    lines.append(f"🧠 Karpathy 精选日报 - {today}")
-    lines.append("=" * 60)
-    lines.append("")
-    lines.append("Andrej Karpathy - AI 研究员、教育家、前 Tesla AI 总监")
-    lines.append("博客: https://karpathy.ai/ | GitHub: https://github.com/karpathy")
-    lines.append("")
+    # 获取 RSS
+    xml_content = fetch_url(RSS_PACK_URL)
+    if not xml_content:
+        print("获取 RSS 失败")
+        return
     
-    # GitHub 动态
-    if github_activities:
-        lines.append("🔨 最新 GitHub 动态")
-        lines.append("-" * 40)
-        for activity in github_activities:
-            lines.append(f"\n【{activity['type']}】{activity['title']}")
-            if activity['published']:
-                lines.append(f"📅 {activity['published']}")
-            if activity['summary']:
-                lines.append(f"📝 {activity['summary']}")
-            if activity['link']:
-                lines.append(f"🔗 {activity['link']}")
-        lines.append("")
+    entries = parse_rss(xml_content)
+    print(f"解析到 {len(entries)} 条 RSS 条目")
     
-    # YouTube 视频
-    if youtube_videos:
-        lines.append("🎬 最新 YouTube 视频")
-        lines.append("-" * 40)
-        for video in youtube_videos:
-            lines.append(f"\n【{video['type']}】{video['title']}")
-            if video['published']:
-                lines.append(f"📅 {video['published']}")
-            if video['link']:
-                lines.append(f"🔗 {video['link']}")
-        lines.append("")
+    if not entries:
+        print("没有 RSS 条目")
+        return
     
-    # 博客文章
-    if blog_posts:
-        lines.append("📚 博客文章")
-        lines.append("-" * 40)
-        for post in blog_posts:
-            lines.append(f"\n【{post['type']}】{post['title']}")
-            if post['link']:
-                lines.append(f"🔗 {post['link']}")
-        lines.append("")
+    # 只处理最近15条
+    entries = entries[:15]
     
-    # 精选内容（始终显示）
-    lines.append("⭐ 精选推荐内容")
-    lines.append("-" * 40)
-    for item in insights:
-        lines.append(f"\n【{item['type']}】{item['title']}")
-        if item['summary']:
-            lines.append(f"📝 {item['summary']}")
-        if item['link']:
-            lines.append(f"🔗 {item['link']}")
+    # 获取每篇文章内容
+    articles = []
+    for i, entry in enumerate(entries):
+        print(f"正在处理 {i+1}/{len(entries)}: {entry.get('title', 'Unknown')[:50]}...")
+        url = entry.get('link', '')
+        if url:
+            content = fetch_article_content(url)
+            # 使用 RSS 的标题如果获取失败
+            if content['title'] in ['获取失败', '解析失败']:
+                content['title'] = entry.get('title', '无标题')
+            articles.append(content)
     
-    lines.append("")
-    lines.append("=" * 60)
-    lines.append("🦞 由三妹自动采集生成")
-    lines.append("📅 每日更新，追踪 AI 大牛最新动态")
-    lines.append("=" * 60)
+    if not articles:
+        print("没有获取到文章内容")
+        return
     
-    return "\n".join(lines)
+    # 按主题分组
+    topics = group_by_topic(articles)
+    
+    # 生成报告
+    total_count = len(articles)
+    topic_count = len(topics)
+    
+    report = f"""> Andrej Karpathy 精选的信源资讯汇总 | 共 {total_count} 条更新
+---
+"""
+    
+    topic_emojis = {
+        'AI': '🤖',
+        '编程': '💻',
+        '深度学习': '🧠',
+        '创业': '🚀',
+        '硬件': '⚙️',
+        '研究': '📚',
+        '其他': '📝'
+    }
+    
+    for topic, items in topics.items():
+        emoji = topic_emojis.get(topic, '📝')
+        report += f"\n## {emoji} {topic}\n\n"
+        
+        for item in items[:2]:  # 每个主题最多2条
+            title = item['title'][:80] + "..." if len(item['title']) > 80 else item['title']
+            report += f"**{title}**\n"
+            summary = item['content'][:150].replace('\n', ' ')
+            report += f"> {summary}...\n"
+            report += f"🔗 {item['url']}\n\n"
+    
+    topic_names = '、'.join(topics.keys())
+    report += f"""---
+## 📊 今日数据
+- **{total_count}** 条 RSS 更新
+- **{len(articles)}** 篇精选深度阅读  
+- **{topic_count}** 个核心主题：{topic_names}
+## 💡 编者观察
 
-if __name__ == "__main__":
-    digest = generate_digest()
-    print(digest)
+---
+*本日报由 AI 自动生成 | 数据源：Andrej Karpathy curated RSS*
+"""
     
     # 保存到文件
-    output_dir = "/root/.openclaw/workspace/news"
-    os.makedirs(output_dir, exist_ok=True)
-    today_file = datetime.now().strftime('%Y%m%d')
-    output_file = os.path.join(output_dir, f"{today_file}-karpathy-digest.txt")
+    os.makedirs(MEMORY_DIR, exist_ok=True)
+    filename = f"{MEMORY_DIR}/karpathy-digest-{today}.md"
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(report)
     
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(digest)
+    print(f"日报已保存: {filename}")
     
-    print(f"\n\n✅ 日报已保存到: {output_file}")
+    # 发送 Telegram
+    send_telegram_report(f"📚 Karpathy 精选 RSS 日报 - {today}", report)
+    
+    print("日报发送完成")
+
+
+if __name__ == "__main__":
+    generate_digest()
