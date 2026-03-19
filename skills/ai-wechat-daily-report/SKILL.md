@@ -13,8 +13,11 @@ Always apply these defaults unless the user overrides them:
 
 - Write in Chinese.
 - Write in a 科技/AI/财经日报 style.
-- Prefer medium-to-long length; do not make it too short.
-- Focus on facts, synthesis, and market interpretation.
+- Prefer clearly longer-form writing; do not produce short briefs unless the user explicitly asks.
+- Default target length:
+  - 日报总览：约 1200-2500 中文字
+  - 单篇公众号文章：约 1500-2500 中文字
+- Focus on facts, synthesis, industry implications, and market interpretation.
 - Author name: `硅基工具人`.
 - Do **not** include persona sections like `三妹点评`.
 - Do **not** include source links in the article body.
@@ -23,12 +26,13 @@ Always apply these defaults unless the user overrides them:
   - a stronger, more clickable title
   - a digest / cover summary
   - WeChat-friendly HTML styling
+  - a more complete finished-article structure, not a short note
 
 ## Standard workflow
 
 1. Collect the day's relevant AI / tech / market signals.
 2. Draft a Markdown daily report in the workspace.
-3. Use this structure by default:
+3. Use this structure by default for a daily report:
    - 标题
    - 作者 / 时间
    - 今日要闻
@@ -38,9 +42,19 @@ Always apply these defaults unless the user overrides them:
    - 今日关键信号
    - 数据说明
    - 免责声明
-4. Remove raw source URLs from the final body unless the user explicitly asks to keep them.
-5. If asked for GitHub delivery, save the Markdown in the repo and commit only the relevant report change.
-6. If asked for WeChat draft delivery, convert the Markdown to polished WeChat HTML and send it to the Official Account draft box.
+4. Use this structure by default for a single WeChat article:
+   - 标题
+   - 摘要 / 导语
+   - 事件背景
+   - 核心信息拆解
+   - 行业影响
+   - 市场 / 投资视角
+   - 风险与分歧
+   - 写在最后
+5. Make the WeChat article read like a finished public-account post: stronger opening, fuller transitions, clearer subheads, and a meaningful ending.
+6. Remove raw source URLs from the final body unless the user explicitly asks to keep them.
+7. If asked for GitHub delivery, save the Markdown in the repo and commit only the relevant report change.
+8. If asked for WeChat draft delivery, convert the Markdown to polished WeChat HTML and send it to the Official Account draft box.
 
 ## Title rules for WeChat draft
 
