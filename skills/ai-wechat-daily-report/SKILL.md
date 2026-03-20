@@ -80,6 +80,9 @@ When publishing to WeChat:
 - publish to **drafts**, not final publish, unless the user explicitly asks otherwise
 - keep author as `硅基工具人`
 - prefer clean typography, strong section hierarchy, and readable tables
+- avoid Markdown ordered lists / nested bullet lists in the final WeChat rendering when they may break alignment
+- prefer converting list-heavy sections into short subheads + paragraphs, or simple single-line bullet paragraphs
+- if HTML rendering is used, normalize `<ol>`, `<ul>`, and complex `<li><p>...</p></li>` blocks into stable paragraph-style output when needed
 - do not mass-delete old drafts unless the user explicitly asks
 
 ## Operational notes
