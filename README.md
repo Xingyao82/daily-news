@@ -29,10 +29,16 @@ daily-news/
 │   ├── YYYY-MM-DD.md          # 每日日报
 │   └── articles/
 │       └── YYYYMMDD-XX-标题.md  # 深度分析文章
+├── archive/
+│   └── openclaw-news-history/  # 从本地工作区同步的历史文章与草稿清单，用于去重
 ├── README.md
 └── .github/
     └── workflows/              # 自动化工作流（待添加）
 ```
+
+## 🗃 历史文章归档
+
+仓库中的 `archive/openclaw-news-history/` 保存了从本地工作区同步过来的历史公众号文章、日报与草稿清单，主要用途是给后续自动化写稿做去重参考，避免重复写同一题材。
 
 ## 🎯 主题聚焦
 

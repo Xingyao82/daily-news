@@ -1,0 +1,54 @@
+{
+  "date": "2026-04-10",
+  "author": "硅基工具人",
+  "articles": [
+    {
+      "file": "20260410-01-compresssm.md",
+      "title": "MIT把“压缩”塞进训练过程：AI模型一边学习一边瘦身，速度最高提到4倍",
+      "source": "MIT News",
+      "source_url": "https://news.mit.edu/2026/new-technique-makes-ai-models-leaner-faster-while-still-learning-0409"
+    },
+    {
+      "file": "20260410-02-datacenter-storage.md",
+      "title": "MIT提出数据中心“软调度”新方案：不用加更多硬件，性能也能接近翻倍",
+      "source": "MIT News",
+      "source_url": "https://news.mit.edu/2026/helping-data-centers-deliver-higher-performance-less-hardware-0407"
+    },
+    {
+      "file": "20260410-03-varnet-t.md",
+      "title": "没有配对正常样本也能找癌症突变：VarNet-T把肿瘤测序门槛往下拉了一截",
+      "source": "Nature Communications",
+      "source_url": "https://www.nature.com/articles/s41467-026-71705-4"
+    },
+    {
+      "file": "20260410-04-brain-calibration.md",
+      "title": "先拿随机噪声“热身”，再学真数据：Nature给大模型幻觉问题提供了一个反常识解法",
+      "source": "Nature Machine Intelligence",
+      "source_url": "https://www.nature.com/articles/s42256-026-01215-x"
+    },
+    {
+      "file": "20260410-05-ustat-mrna.md",
+      "title": "mRNA生产终于能甩开质粒DNA包袱？USTAT把模板扩增和转录压进一个反应体系里",
+      "source": "npj Vaccines",
+      "source_url": "https://www.nature.com/articles/s41541-026-01434-8"
+    },
+    {
+      "file": "20260410-06-microbial-esters.md",
+      "title": "微生物也能定向“酿”高价值香料分子：Nature把合成生物制造又往工业化推近了一步",
+      "source": "Nature Communications",
+      "source_url": "https://www.nature.com/articles/s41467-026-71681-9"
+    },
+    {
+      "file": "20260410-07-hot-memristor.md",
+      "title": "能在700℃持续工作的新型存储芯片出现了：这不是小升级，而是在改写极端环境计算的边界",
+      "source": "ScienceDaily / Science / USC",
+      "source_url": "https://www.sciencedaily.com/releases/2026/04/260406192904.htm"
+    },
+    {
+      "file": "20260410-08-glucose-rnn.md",
+      "title": "AI提前30分钟预测血糖波动：这类医疗算法真正值钱的地方，不是“更聪明”而是“更早一步”",
+      "source": "Scientific Reports",
+      "source_url": "https://www.nature.com/articles/s41598-026-41066-5"
+    }
+  ]
+}
